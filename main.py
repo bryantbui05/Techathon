@@ -91,6 +91,7 @@ def transcribe_audio():
         
         if transcript["status"] == "completed":
             print(f"\n{transcript['text']}")
+            break
 
         elif transcript["status"] == "error":
             raise RuntimeError(f"Transcription failed: {transcript['error']}")
