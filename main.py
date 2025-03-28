@@ -3,6 +3,9 @@ import wave
 import time
 import requests
 from gpiozero import Button
+import ai_caller
+from gtts import gTTS
+import os
 
 # Constants for audio recording
 FORMAT = pyaudio.paInt16
@@ -90,7 +93,13 @@ def transcribe_audio():
         transcript = requests.get(polling_endpoint, headers=headers).json()
         
         if transcript["status"] == "completed":
-            print(f"\n{transcript['text']}")
+            # print(f"\n{transcript['text']}")
+            response = ai_caller.get_ai_response(transcript['text'])
+            response = response[len("AI Response:"):]
+            print('\n' + response)
+            tts = gTTS(response, lang="en")
+            tts.save("output.mp3")
+            os.system("mpg321 output.mp3")
             break
 
         elif transcript["status"] == "error":
